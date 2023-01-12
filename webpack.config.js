@@ -5,7 +5,8 @@ module.exports = {
   entry: './client/index.js',
   output: {
     path: path.join(__dirname, '/dist'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '/'
   },
   plugins: [
     new HTMLWebpackPlugin({
@@ -15,7 +16,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /.js$/,
+        test: /\.js$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -23,9 +24,26 @@ module.exports = {
             presets: ['@babel/preset-env', '@babel/preset-react']
           }
         }
+      },
+      {
+        test: /\.css$/,
+        exclude: /node_modules/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
       }
     ]
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, './build'),
+      publicPath: '/'
+    },
+    proxy: {
+      '/': 'http://localhost:3000'
+    },
+    compress: true,
+    port: 8080,
   }
-  
-
 }

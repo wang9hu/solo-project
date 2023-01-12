@@ -1,17 +1,49 @@
 const path = require('path');
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
+
+const userController = require('./controllers/userController');
+const cookieController = require('./controllers/cookieController');
+
 const app = express();
 
 const PORT = 3000;
 
+const mongoURI = 'mongodb+srv://wang9hu:DWI8DpND4rxwUfaO@cluster0.4mbtnas.mongodb.net/?retryWrites=true&w=majority';
+mongoose.connect(mongoURI);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(express.static(path.resolve(__dirname, '../client')));
+app.use(cookieParser());
 
-// app.use('/api', apiRouter);
+app.get('/cookie', cookieController.verifySSIDCookie, (req, res) => {
+  res.status(200).send(res.locals.data);
+})
 
-app.use('/', (req, res) => res.status(404).send('This is not the page you\'re looking for...'));
+app.post('/signup', userController.createUser, cookieController.setSSIDCookie, (req, res) => {
+  res.status(200).send(res.locals.data);
+});
 
+app.post('/login', userController.verifyuser, cookieController.setSSIDCookie, (req, res) => {
+  res.status(200).send(res.locals.data);
+});
+
+// app.get('/:username', userController.addNewItem, (req, res) => {
+//   res.status(200).send(res.locals.data);
+// });
+
+app.post('/:username/newitem', userController.addNewItem, (req, res) => {
+  res.status(200).send(res.locals.data);
+});
+
+
+// all others
+app.use( '*' , (req, res) => {
+  res.status(404).send({message: 'This is not the page you\'re looking for...'})
+});
+
+// global error handler
 app.use((err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
