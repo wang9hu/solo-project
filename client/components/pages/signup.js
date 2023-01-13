@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom'
 
 
+
 const Signup = () => {
   const navigate = useNavigate();
 
@@ -32,7 +33,9 @@ const Signup = () => {
       setTimeout(() => {
         navigate(`/${created.username}`, {state: {...created}});
       }, 1000);
-    } 
+    } else if (Object.hasOwn(created, 'err')) {
+      setSignupInfo(created.err)
+    }
   })
 
 
@@ -45,12 +48,12 @@ const Signup = () => {
       <br/>
       <Link to='/login'>Login</Link>
       <form onSubmit={createUser}>
-        <h1> This is the signup page </h1>
-        <label>Username:</label>
-        <input type="text" name="username" onChange={e => setUsername(e.target.value)} required />
-        <label> Password: </label>
-        <input type="password" id="password" onChange={e => setPassword(e.target.value)} required />
-        <button type="submit">Create User</button>
+      <h1> Welcome! </h1>
+        <label className="username">Username:<input type="text" name="username" onChange={e => setUsername(e.target.value)} required /></label>
+        <br/>
+        <label className="password">Password:<input type="password" id="password" onChange={e => setPassword(e.target.value)} required /></label>
+        <br/>
+        <button type="submit">Login</button>
         <p>{signupInfo}</p>
       </form>
     </>

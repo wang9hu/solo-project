@@ -1,9 +1,31 @@
 body {
-  background-color: #1b98e0;
+  background-color: #42a8e4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+button {
+  margin-left: auto;
+  padding: none;
+}
+
+.gr {
+  background-color: lightgreen;
+}
+
+form {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  padding: 10px;
 }
 
 .item {
   border: 1px solid yellow;
+  padding: 5px;
   margin: 5px;
   display: flex;
   flex-direction: column;
@@ -14,11 +36,31 @@ body {
   flex-direction: row;
 }
 
+.priority {
+  border: 1px solid black;
+  margin-left: 5px;
+}
+
+.title {
+  font-weight: bold;
+  align-self: flex-start;
+  margin: 10px;
+}
+
 .itemList {
   border: 1px solid black;
+  flex-grow: 1;
+  height: 500px;
+  overflow-y: auto;
 }
 
 .createNewItemForm {
   display: flex;
   flex-direction: column;
+  padding: 10px;
 }
+
+.returnBtn {
+  margin-bottom: 5px;
+}
+

@@ -15,8 +15,8 @@ cookieController.setSSIDCookie = (req, res, next) => {
 }
 
 cookieController.verifySSIDCookie = (req, res, next) => {
-  const cookie = req.cookies.ssid;
-  User.findOne({ _id: cookie }, (err, data) => {
+  const _id = req.cookies.ssid;
+  User.findOne({ _id }, (err, data) => {
     if(!data) return next({
       log: 'userController.verifySSIDCookie, Error: data for this _id does not exist in db',
       message: { err: 'cookie not valid'}
@@ -29,5 +29,13 @@ cookieController.verifySSIDCookie = (req, res, next) => {
     return next();
   })
 }
+
+cookieController.logout = (req, res, next) => {
+    res.cookie('ssid', 'none', { httpOnly: true });
+    console.log(req.cookies);
+    
+    return next()
+}
+
 
 module.exports = cookieController;

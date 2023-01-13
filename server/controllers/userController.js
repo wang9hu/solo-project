@@ -11,7 +11,7 @@ userController.createUser = async (req, res, next) => {
     if (existed) {
       next({
         log: 'userController.createUser, Error: username existed in db',
-        message: {err: 'Username existed'}
+        message: {err: 'Username existed!'}
       })
     } else {
       const newUser = User({username, password});
@@ -30,7 +30,7 @@ userController.createUser = async (req, res, next) => {
   } else {
     next({
       log: 'userController.createUser, Error: username or password is not string',
-      message: {err: 'Username and password should be string'}
+      message: {err: 'Username and password must be string!'}
     });
   }
 }
@@ -52,7 +52,7 @@ userController.verifyuser = async (req, res, next) => {
       if (!bcrypt.compareSync(password, data.password)) {
         return next({
           log: 'userController.verifyuser, Error: password is wrong',
-          message: { err: 'password is wrong'}
+          message: { err: 'Password is wrong!'}
         })
       } else {
         res.locals.id = data._id;
@@ -64,51 +64,78 @@ userController.verifyuser = async (req, res, next) => {
 }
 
 userController.addNewItem = async (req, res, next) => {
+  const _id = req.cookies.ssid;
   const { time, priority, description, title } = req.body;
-  const username = req.params.username;
-  const userInfo = await User.findOne({ username }).exec();
+  const userInfo = res.locals.data;
   userInfo.todoList.push({ time, priority, description, title });
+  
   // here if use save would reset the password hash
-  User.findOneAndUpdate({ username }, userInfo, (err, data) => {
-    if(err) next({
+  User.findByIdAndUpdate({ _id }, userInfo, { new: true }, (err, data) => {
+    if(err) return next({
       log: 'userController.addNewItem, Error: could not save item',
       message: { err: 'could not save item'}
     })
-
-    User.findOne({ username })
-    .exec()
-    .then((data) => {
-      res.locals.data = data;
-      next();
-    })    
+    res.locals.data = data;
+    return next(); 
   });
+}
+
+userController.deleteItem = async (req, res, next) => {
+  const userInfo = res.locals.data;
+  const _id = req.cookies.ssid;
+  const item_id = req.body.item_id;
+  const item = userInfo.todoList.id(item_id);
+  const index = userInfo.todoList.indexOf(item);
+  console.log(index);
+  userInfo.todoList.splice(index, 1);
+  User.findByIdAndUpdate( { _id }, userInfo, { new: true }, (err, data) => {
+    if(err) return next({
+      log: 'userController.deleteItem, Error: could not delete item',
+      message: { err: 'could not delete item'}
+    })
+    res.locals.data = data;
+    return next();
+  });
+
 }
 
 
 userController.getUserInfo = async (req, res, next) => {
-  const { username } = req.body;
-  
-  User.findOne({ username }, (err, data) => {
+  if (res.locals.data) return next();
+
+  const _id = req.cookies.ssid;
+ 
+  User.findOne( { _id }, (err, data) => {
       if(!data) return next({
-        log: 'userController.verifyuser, Error: data for this username does not exist in db',
-        message: { err: 'username not existed'}
+        log: 'userController.getUserInfo, Error: data not exist in db',
+        message: { err: 'data not existed'}
       })
       if(err) return next({
-        log: 'userController.verifyuser, Error: db error',
+        log: 'userController.getUserInfo, Error: db error',
         message: { err: 'error from database'}
       })
-      if (!bcrypt.compareSync(password, data.password)) {
-        return next({
-          log: 'userController.verifyuser, Error: password is wrong',
-          message: { err: 'password is wrong'}
-        })
-      } else {
-        res.locals.id = data._id;
-        res.locals.data = data;
-        return next();
+      res.locals.data = data;
+      return next();
       }
-    }
   )
+}
+
+
+userController.updateInfo = (req, res, next) => {
+  const userInfo = res.locals.data;
+  const _id = req.cookies.ssid;
+  const { item_id, completion } = req.body;
+  const item = userInfo.todoList.id(item_id);
+  console.log(item);
+  item.completion = completion;
+  User.findByIdAndUpdate( { _id }, userInfo, { new: true }, (err, data) => {
+    if(err) next({
+      log: 'userController.addNewItem, Error: could not save item',
+      message: { err: 'could not save item'}
+    })
+    res.locals.data = data;
+    next();
+  });
 }
 
 

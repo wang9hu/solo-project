@@ -5,12 +5,13 @@ const newItem = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+
   const [time, setTime] = useState();
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
   const [priority, setPriority] = useState();
   const [createdNewItem, setCreatedNewItem] = useState(false);
-  const [updatedUserInfo, setUpdatedUserInfo] = useState({...location.state});
+  const [updatedUserInfo, setUpdatedUserInfo] = useState(location.state);
   const [saveItemInfo, setSaveItemInfo] = useState();
 
 
@@ -29,7 +30,10 @@ const newItem = () => {
     
     setCreatedNewItem(true);
     setUpdatedUserInfo(data);
+  }
 
+  const returnPrevious = () => {
+    navigate(-1);
   }
 
   useEffect(() => {
@@ -44,7 +48,8 @@ const newItem = () => {
 
   return (
     <>
-      <h1> This is the add item page </h1>
+      <h1> What you wanna do next? </h1>
+      <button className="returnBtn" onClick={returnPrevious}>Return</button>
       <form className="createNewItemForm" onSubmit={addItem}>
         <label>Time:</label>
           <input type="datetime-local" name="time" onChange={e => setTime(e.target.value)} required />
@@ -53,13 +58,10 @@ const newItem = () => {
         <label> Description: </label>
           <input type="textarea" name="description" onChange={e => setDescription(e.target.value)} required />
         <label> Priority: </label>
-          <input type="radio" id="low" name="priority" value="low" checked={ priority === 'low' } onChange={(e) => setPriority(e.target.value)} /> 
-          <label htmlFor="low">Low</label>
-          <input type="radio" id="medium" name="priority" value="medium" checked={ priority === 'medium' } onChange={(e) => setPriority(e.target.value)} />
-          <label htmlFor="medium">Medium</label>
-          <input type="radio" id="high" name="priority" value="high" checked={ priority === 'high' } onChange={(e) => setPriority(e.target.value)}/>
-          <label htmlFor="high">High</label>
-        <button type="submit">Add items</button>
+          <label htmlFor="low"><input type="radio" id="low" name="priority" value="low" checked={ priority === 'low' } onChange={(e) => setPriority(e.target.value)} />Low</label>
+          <label htmlFor="medium"><input type="radio" id="medium" name="priority" value="medium" checked={ priority === 'medium' } onChange={(e) => setPriority(e.target.value)} />Medium</label>
+          <label htmlFor="high"><input type="radio" id="high" name="priority" value="high" checked={ priority === 'high' } onChange={(e) => setPriority(e.target.value)}/>High</label>
+        <button type="submit" >Add items</button>
         <p>{saveItemInfo}</p>
       </form>
     </>

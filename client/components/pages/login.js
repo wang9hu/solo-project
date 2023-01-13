@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
 
 
-const Signup = () => {
+const Login = () => {
   const navigate = useNavigate();
 
   const [username, setUsername] = useState();
@@ -10,7 +10,7 @@ const Signup = () => {
   const [loginInfo, setLoginInfo] = useState();
   const [login, setLogin] = useState({});
 
-  const createUser = async (e) => {
+  const verifyUser = async (e) => {
     e.preventDefault();
     const body = { username, password };
 
@@ -45,17 +45,17 @@ const Signup = () => {
       <Link to='/signup'>Sign Up</Link>
       <br/>
       <Link to='/login'>Login</Link>
-      <form onSubmit={createUser}>
-        <h1> This is the login page </h1>
-        <label>Username:</label>
-        <input type="text" name="username" onChange={e => setUsername(e.target.value)} required />
-        <label> Password: </label>
-        <input type="password" id="password" onChange={e => setPassword(e.target.value)} required />
+      <form className="form" onSubmit={verifyUser}>
+      <h1> Welcome Back! </h1>
+        <label className="username">Username:<input type="text" name="username" onChange={e => setUsername(e.target.value)} required /></label>
+        <br/>
+        <label className="password">Password:<input type="password" id="password" onChange={e => setPassword(e.target.value)} required /></label>
+        <br/>
         <button type="submit">Login</button>
-        <p>{loginInfo}</p>
       </form>
+      <p>{loginInfo}</p>
     </>
   )
 }
 
-export default Signup;
+export default Login;

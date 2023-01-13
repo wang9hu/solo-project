@@ -1,4 +1,3 @@
-const path = require('path');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
@@ -17,9 +16,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.get('/cookie', cookieController.verifySSIDCookie, (req, res) => {
+app.get('/logout', cookieController.logout, (req, res) => {
+  res.status(200).json("You have logged out!");
+});
+
+app.get('/cookie', cookieController.verifySSIDCookie, userController.getUserInfo, (req, res) => {
   res.status(200).send(res.locals.data);
-})
+});
 
 app.post('/signup', userController.createUser, cookieController.setSSIDCookie, (req, res) => {
   res.status(200).send(res.locals.data);
@@ -29,14 +32,21 @@ app.post('/login', userController.verifyuser, cookieController.setSSIDCookie, (r
   res.status(200).send(res.locals.data);
 });
 
-// app.get('/:username', userController.addNewItem, (req, res) => {
-//   res.status(200).send(res.locals.data);
-// });
-
-app.post('/:username/newitem', userController.addNewItem, (req, res) => {
+app.post('/:username/newitem', cookieController.verifySSIDCookie, userController.addNewItem, (req, res) => {
   res.status(200).send(res.locals.data);
 });
 
+app.put('/:username', cookieController.verifySSIDCookie, userController.updateInfo, (req, res) => {
+  res.status(200).send(res.locals.data);
+});
+
+app.delete('/:username', cookieController.verifySSIDCookie, userController.deleteItem, (req, res) => {
+  res.status(200).send(res.locals.data);
+});
+
+app.get('/:username', userController.getUserInfo, (req, res) => {
+  res.status(200).send(res.locals.data);
+});
 
 // all others
 app.use( '*' , (req, res) => {
