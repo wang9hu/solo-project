@@ -31,9 +31,7 @@ cookieController.verifySSIDCookie = (req, res, next) => {
 }
 
 cookieController.logout = (req, res, next) => {
-    res.cookie('ssid', 'none', { httpOnly: true });
-    console.log(req.cookies);
-    
+    res.cookie('ssid', 'none', { httpOnly: true });   
     return next()
 }
 

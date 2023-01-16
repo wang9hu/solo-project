@@ -86,7 +86,6 @@ userController.deleteItem = async (req, res, next) => {
   const item_id = req.body.item_id;
   const item = userInfo.todoList.id(item_id);
   const index = userInfo.todoList.indexOf(item);
-  console.log(index);
   userInfo.todoList.splice(index, 1);
   User.findByIdAndUpdate( { _id }, userInfo, { new: true }, (err, data) => {
     if(err) return next({
@@ -126,7 +125,6 @@ userController.updateInfo = (req, res, next) => {
   const _id = req.cookies.ssid;
   const { item_id, completion } = req.body;
   const item = userInfo.todoList.id(item_id);
-  console.log(item);
   item.completion = completion;
   User.findByIdAndUpdate( { _id }, userInfo, { new: true }, (err, data) => {
     if(err) next({
